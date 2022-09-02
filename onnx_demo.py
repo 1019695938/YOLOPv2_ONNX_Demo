@@ -19,7 +19,7 @@ class Video():
         self._resized_width = 640
         self._resized_height = 384
         self._fourcc = cv2.resize(self._stream.get(cv2.CAP_PROP_FOURCC), (self._resized_width, self._resized_height), cv2.INTER_LINEAR)
-        self.sess = onnxruntime.InferenceSession('model_384_640.onnx', providers = ['CUDAExecutionProvider'])
+        self.sess = onnxruntime.InferenceSession(args.onnx_model, providers = ['CUDAExecutionProvider'])
 
     def run(self):
         while self._stream.isOpened():
@@ -75,6 +75,7 @@ class Video():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--source', type=str, default='0', help='source')
+    parser.add_argument('--onnx-model', type=str, default='YOLOPv2.onnx', help='ONNX model')
     parser.add_argument('--conf-thres', type=float, default=0.3, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')
     parser.add_argument('--classes', nargs='+', type=int, help='filter by class: --class 0, or --class 0 2 3')
