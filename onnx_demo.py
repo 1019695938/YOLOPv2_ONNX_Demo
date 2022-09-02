@@ -6,32 +6,8 @@ import onnxruntime
 import numpy as np
 
 from utils.utils import \
-    letterbox,\
-    time_synchronized,select_device, increment_path,\
-    scale_coords,xyxy2xywh,non_max_suppression,split_for_trace_model,\
-    driving_area_mask,lane_line_mask,plot_one_box,show_seg_result,\
-    AverageMeter,\
-    LoadImages
-
-
-
-
-# onnx
-# tensor = torch.zeros(1, 3, 640, 640)
-# onnx_pred_0, onnx_pred_1, onnx_pred_2 = onnx_pred
-# onnx_anchor_grid_0, onnx_anchor_grid_1, onnx_anchor_grid_2 = onnx_anchor_grid_0[None], onnx_anchor_grid_1[None], onnx_anchor_grid_2[None]
-# onnx_seg, onnx_ll = onnx_seg[None], onnx_ll[None]
-
-# onnx_pred_0 = torch.from_numpy(onnx_pred_0)
-# onnx_pred_1 = torch.from_numpy(onnx_pred_1)
-# onnx_pred_2 = torch.from_numpy(onnx_pred_2)
-# onnx_anchor_grid_0 = torch.from_numpy(onnx_anchor_grid_0)
-# onnx_anchor_grid_1 = torch.from_numpy(onnx_anchor_grid_1)
-# onnx_anchor_grid_2 = torch.from_numpy(onnx_anchor_grid_2)
-# onnx_pred = [onnx_pred_0, onnx_pred_1, onnx_pred_2]
-# onnx_anchor_grid = [onnx_anchor_grid_0, onnx_anchor_grid_1, onnx_anchor_grid_2]
-# onnx_seg = torch.from_numpy(onnx_seg)
-# onnx_ll = torch.from_numpy(onnx_ll)
+    letterbox,scale_coords,non_max_suppression,split_for_trace_model,\
+    driving_area_mask,lane_line_mask,plot_one_box,show_seg_result
 
 class Video():
     def __init__(self, args) -> None:
@@ -84,16 +60,11 @@ class Video():
         ll_seg_mask = lane_line_mask(ll)
 
         for i, det in enumerate(pred):
-          
             gn = torch.tensor(self.img_copy.shape)[[1, 0, 1, 0]]
             if len(det):
                 det[:, :4] = scale_coords(self.img.shape[2:], det[:, :4], self.img_copy.shape).round()
-
-                # Print results
                 for c in det[:, -1].unique(): n = (det[:, -1] == c).sum()
-            for *xyxy, conf, cls in reversed(det):
-                plot_one_box(xyxy, self.img_copy, line_thickness=3)
-                
+            for *xyxy, conf, cls in reversed(det): plot_one_box(xyxy, self.img_copy, line_thickness=3)
             show_seg_result(self.img_copy, (da_seg_mask, ll_seg_mask), is_demo=True)
 
     def destory(self):
