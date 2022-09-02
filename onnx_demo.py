@@ -12,8 +12,8 @@ from utils.utils import \
 class Video():
     def __init__(self, args) -> None:
         self.args = args
-        if isinstance(int(args.source), int): self._stream = cv2.VideoCapture(int(args.source), cv2.CAP_DSHOW)
-        elif isinstance(args.source, str): self._stream = cv2.VideoCapture(args.source)
+        self._stream = cv2.VideoCapture(int(args.source), cv2.CAP_DSHOW)
+        # self._stream = cv2.VideoCapture(args.source)
         self._fps = self._stream.get(cv2.CAP_PROP_FPS)
         self.stride = 32
         self._resized_width = 640
